@@ -52,7 +52,7 @@ def conv2D(inImage: np.ndarray, kernel2: np.ndarray) -> np.ndarray:
                     # ignore input samples which are out of bound
                     if (ii>=0) and (ii<rows) and (jj>=0) and (jj<cols):
                         sum += inImage[ii][jj]*kernel[m][n]
-            ans[i][j] = int(float(abs(sum)) + float(0.5))
+            ans[i][j] = int(float(abs(sum)) + float(0.5))/256
     print(ans)
     return ans
 
@@ -90,7 +90,7 @@ def convDerivative(inImage: np.ndarray) -> np.ndarray:
     Ix_n = cv2.normalize(Ix.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)  # Convert to normalized floating point
     Iy_n = cv2.normalize(Iy.astype('double'), None, 0.0, 1.0, cv2.NORM_MINMAX)  # Convert to normalized floating point
     mag = cv2.magnitude(Ix_n, Iy_n)
-    cv2.imshow('ma', mag)
+    cv2.imshow('convDerivative', mag)
     cv2.waitKey(0)
     return mag
 
@@ -102,7 +102,7 @@ def blurImage1(inImage: np.ndarray, kernelSize: np.ndarray) -> np.ndarray:
     grey_im = np.pad(grey_im, pad_width=1, mode='constant', constant_values=0)
     blurImage = conv2D(grey_im, kernel)
     # blurImage = cv2.filter2D(grey_im, -1, kernel)
-    cv2.imshow('figur2', blurImage)
+    cv2.imshow('blurImage1', blurImage)
     cv2.waitKey(0)
     return blurImage
 
@@ -114,10 +114,9 @@ def blurImage2(inImage: np.ndarray, kernelSize: np.ndarray) -> np.ndarray:
     t1 = cv2.getGaussianKernel(kernelSize[0], 1.0)
     t2 = cv2.getGaussianKernel(kernelSize[1], 1.0)
     kernel = np.dot(t1, t2.T)
-    # print("blurimage2 kernel = ", kernel)
     blurImage = cv2.filter2D(inImage, -1, kernel)
-    cv2.imshow('figure1', blurImage)
-    cv2.waitKey(0)
+    # cv2.imshow('figure1', blurImage)
+    # cv2.waitKey(0)
     return blurImage
 
 
@@ -206,10 +205,10 @@ def edgeDetectionZeroCrossingSimple(I: np.ndarray) -> (np.ndarray, np.ndarray):
 # conv2D(aa, bb)
 
 
-im = cv2.imread('m.png')
+im = cv2.imread('lena.png')
 cv2.imshow('figure1', im)
 cv2.waitKey(0)
-# grey_im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+grey_im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 # cv2.imshow('lena', grey_im)
 # cv2.waitKey(0)
 # ans_mag = convDerivative(grey_im)
@@ -217,8 +216,8 @@ cv2.waitKey(0)
 # blurImage2(im, np.array([5, 5]))
 # blurImage1(im, np.array([5, 5]))
 
-# retval, imgmask = cv2.threshold(grey_im, 120, 255, cv2.THRESH_BINARY)
-# cv2.imshow('figure1', imgmask)
-# cv2.waitKey(0)
+retval, imgmask = cv2.threshold(grey_im, 120, 255, cv2.THRESH_BINARY)
+cv2.imshow('figure1', imgmask)
+cv2.waitKey(0)
 # edgeDetectionSobel(imgmask)
 # edgeDetectionZeroCrossingSimple(imgmask)
